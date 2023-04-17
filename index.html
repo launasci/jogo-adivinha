@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo de Advinhação</title>
+</head>
+
+<body>
+  <div class="game-container">
+    <div class="bcg-container">
+      <div class="form-container">
+        <h1>Jogo de Advinhação</h1>
+        <div class="input-container">
+          <input type="number" id="numero" placeholder="Digite seu número" />
+        </div>
+
+        <div class="button-container">
+          <button onclick="joga()">Chutar</button>
+          <button onclick="limpaForm()">Reiniciar</button>
+        </div>
+      </div>
+    </div>
+    <p id="resultado" class="resultado"></p>
+  </div>
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <p id="modal-message"></p>
+    </div>
+  </div>
+
+
+</body>
+
+</html>
+
+<script>
+  var numeroInput = document.getElementById("numero");
+  var resultadoDiv = document.getElementById("resultado");
+  var modal = document.getElementById("modal");
+  var modalMessage = document.getElementById("modal-message");
+
+  function sorteiaNumero() {
+    return parseInt(Math.random() * 10)
+  }
+
+  function numeroValue() {
+    return numeroInput.value
+  }
+
+  function mostraModal(mensagem) {
+    modalMessage.innerHTML = mensagem; // define a mensagem exibida no modal
+
+    modal.style.display = "block"; // exibe o modal
+
+    var modalClose = document.getElementsByClassName("modal-close")[0];
+
+    // fecha o modal quando o usuário clicar no "x" ou em qualquer área fora do modal
+    modalClose.onclick = function () {
+      modal.style.display = "none";
+    };
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+  }
+
+  function verificaNumero() {
+    var numero = numeroValue()
+    if (!numero) {
+      mostraModal("Por favor, digite um número.")
+      return false
+    }
+    if (numero > 10 || numero < 0) {
+      mostraModal('Escolha um número de 0 a 10!')
+      return false
+    }
+    return true
+  }
+
+  function joga() {
+    if (verificaNumero()) {
+      var numero = numeroValue()
+      var numeroSorteado = sorteiaNumero()
+      acertouErrou(numero, numeroSorteado);
+    }
+  }
+
+  function acertouErrou(numero, numeroSorteado) {
+    var dictResultado = {
+      acertou: 'Parabéns você acertou!',
+      numeroMenor: `Poxa, o número que pensei é menor que o número chutado. Tente de novo! <br> 
+                    Número pensado: ${numeroSorteado} <br> Número chutado: ${numero}`,
+      numeroMaior: `Poxa, o número que pensei é maior que o número chutado. Tente de novo! <br> 
+                    Número pensado: ${numeroSorteado} <br> Número chutado: ${numero}`
+    };
+
+    var resultado = numero == numeroSorteado ? dictResultado.acertou : (numero > numeroSorteado ? dictResultado.numeroMaior : dictResultado.numeroMenor);
+
+    resultadoDiv.innerHTML = resultado;
+    resultadoDiv.style.display = "block";
+
+  }
+
+  function limpaForm() {
+    numeroInput.value = '';
+    resultadoDiv.innerHTML = ''
+    resultadoDiv.style.display = "none";
+  }
+
+  numeroInput.addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+      joga();
+    }
+  })
+</script>
+
+<style>
+  body {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #F7F7F7;
+    font-family: Arial, sans-serif;
+  }
+
+  .game-container {
+    max-width: 500px;
+  }
+
+  .bcg-container {
+    position: relative;
+    background-image: url('https://images.unsplash.com/photo-1586685984116-94cca153e792?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
+    background-size: cover;
+    height: 290px;
+    width: 550px;
+    border-radius: 4px;
+  }
+
+  .form-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  input[type="number"] {
+    padding: 10px;
+    font-size: 18px;
+    width: 300px;
+    border-radius: 4px;
+    border: none;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #569dd5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  button:hover {
+    background-color: #2294ed;
+  }
+
+  button:last-of-type {
+    margin-right: 0;
+  }
+
+  .resultado {
+    background-color: white;
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: none;
+    color: #5C5C5C;
+    font-size: 18px;
+    width: 520px;
+    line-height: 1.5;
+  }
+
+  .modal {
+    display: none;
+    /* esconde o modal por padrão */
+    position: fixed;
+    /* mantém o modal fixo na tela */
+    z-index: 1;
+    /* coloca o modal acima de todos os outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* fundo escuro semitransparente */
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+  }
+
+  .modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .modal-close:hover,
+  .modal-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
