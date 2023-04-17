@@ -99,7 +99,7 @@
                     Número pensado: ${numeroSorteado} <br> Número chutado: ${numero}`
     };
 
-    var resultado = numero == numeroSorteado ? dictResultado.acertou : (numero > numeroSorteado ? dictResultado.numeroMaior : dictResultado.numeroMenor);
+    var resultado = numero == numeroSorteado ? dictResultado.acertou : (numero > numeroSorteado ? dictResultado.numeroMenor : dictResultado.numeroMaior);
 
     resultadoDiv.innerHTML = resultado;
     resultadoDiv.style.display = "block";
